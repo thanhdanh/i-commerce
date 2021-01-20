@@ -1,6 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import mongoose, { Document } from 'mongoose';
-import { Category } from './category.schema';
+import { Document, SchemaTypes, Types } from 'mongoose';
 
 export type ProductDocument = Product & Document;
 
@@ -14,10 +13,7 @@ export enum Brand {
 }
 
 @Schema({ 
-    timestamps: {
-        createdAt: 'created_at',
-        updatedAt: 'updated_at',
-    }
+    timestamps: true
 })
 export class Product {
     @Prop({
@@ -25,19 +21,19 @@ export class Product {
         required: true,
         length: 10
     })
-    code: string;
+    code!: string;
 
     @Prop({ required: true, minlength: 10 })
-    name: string;
+    name!: string;
 
     @Prop({
         required: true,
         default: 0
     })
-    price: number;
+    price!: number;
 
     @Prop()
-    color: string;
+    color!: string;
 
     @Prop({
         enum: [
@@ -46,16 +42,22 @@ export class Product {
         type: String,
         required: true,
     })
-    brand: string;
+    brand!: string;
 
     @Prop()
     description?: string;
 
-    @Prop([String])
-    tags: string[];
+    @Prop([{ type: SchemaTypes.ObjectId, ref: 'Tag' }])
+    tags!: Types.ObjectId[];
 
-    @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Category' })
-    kind: Category;
+    @Prop({ type: SchemaTypes.ObjectId, ref: 'Category', required: true })
+    type!: Types.ObjectId;
+
+    @Prop({ default: Date.now })
+    createdAt!: Date;
+
+    @Prop({ default: Date.now })
+    updatedAt!: Date;
 }
 
 export const ProductSchema = SchemaFactory.createForClass(Product);

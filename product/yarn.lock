@@ -534,6 +534,22 @@
     "@types/yargs" "^15.0.0"
     chalk "^4.0.0"
 
+"@nestjs-query/core@0.21.2":
+  version "0.21.2"
+  resolved "https://registry.yarnpkg.com/@nestjs-query/core/-/core-0.21.2.tgz#a416735278d713f855e2805537503f91fbbaa375"
+  integrity sha512-1BvvlnMBpF654b9Lx+FdfjsBtWfH8Be09jcmUxJIZDYqqkCdEc3LGVaFZeCOouR8U1+5RZE66FM1nnGDJuwYMA==
+  dependencies:
+    lodash.merge "^4.6.2"
+
+"@nestjs-query/query-mongoose@^0.21.2":
+  version "0.21.2"
+  resolved "https://registry.yarnpkg.com/@nestjs-query/query-mongoose/-/query-mongoose-0.21.2.tgz#700d555a763b33b5985b69f68e80b39be9657307"
+  integrity sha512-2hbdKwsvbxaj0BC3XYGOZJayEa3c9kYoyKY4fOadqbA3sIR8FVuU4cXdu1XkoksGRd7VI54HUw/r/nUAnbPJ4A==
+  dependencies:
+    "@nestjs-query/core" "0.21.2"
+    lodash.escaperegexp "^4.1.2"
+    lodash.merge "^4.6.2"
+
 "@nestjs/cli@^7.5.1":
   version "7.5.4"
   resolved "https://registry.yarnpkg.com/@nestjs/cli/-/cli-7.5.4.tgz#d4cdce388d7f6a32dabdf5bab909af23653f7740"
@@ -3927,10 +3943,20 @@ locate-path@^5.0.0:
   dependencies:
     p-locate "^4.1.0"
 
+lodash.escaperegexp@^4.1.2:
+  version "4.1.2"
+  resolved "https://registry.yarnpkg.com/lodash.escaperegexp/-/lodash.escaperegexp-4.1.2.tgz#64762c48618082518ac3df4ccf5d5886dae20347"
+  integrity sha1-ZHYsSGGAglGKw99Mz11YhtriA0c=
+
 lodash.memoize@4.x:
   version "4.1.2"
   resolved "https://registry.yarnpkg.com/lodash.memoize/-/lodash.memoize-4.1.2.tgz#bcc6c49a42a2840ed997f323eada5ecd182e0bfe"
   integrity sha1-vMbEmkKihA7Zl/Mj6tpezRguC/4=
+
+lodash.merge@^4.6.2:
+  version "4.6.2"
+  resolved "https://registry.yarnpkg.com/lodash.merge/-/lodash.merge-4.6.2.tgz#558aa53b43b661e1925a0afdfa36a9a1085fe57a"
+  integrity sha512-0KpjqXRVvrYyCsX1swR/XTK0va6VQkQM6MNo7PqW77ByjAhoARA8EfrP1N4+KlKj8YS0ZUCtRT/YUuhyYDujIQ==
 
 lodash.sortby@^4.7.0:
   version "4.7.0"

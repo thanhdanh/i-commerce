@@ -1,13 +1,13 @@
 import { Model } from 'mongoose';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { RequestQueryParams } from './interfaces/request_query.interface';
-import { CategoryDocument } from './schemas/category.schema';
-import { ProductDocument } from './schemas/product.schema';
-import { Product } from './schemas/product.schema';
+import { RequestQueryParams } from '../interfaces/request_query.interface';
+import { CategoryDocument } from '../schemas/category.schema';
+import { ProductDocument } from '../schemas/product.schema';
+import { Product } from '../schemas/product.schema';
 
 @Injectable()
-export class AppService {
+export class ProductService {
   constructor(
     @InjectModel(Product.name) private productModel: Model<ProductDocument>,
     @InjectModel(Product.name) private categoryModel: Model<CategoryDocument>
@@ -15,5 +15,6 @@ export class AppService {
 
   searchProduct(params: RequestQueryParams) {
     const query = this.productModel.find();
+    
   }
 }

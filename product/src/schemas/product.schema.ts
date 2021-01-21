@@ -47,6 +47,9 @@ export class Product {
     @Prop()
     description?: string;
 
+    @Prop({ default: true })
+    visible!: boolean;
+
     @Prop([{ type: SchemaTypes.ObjectId, ref: 'Tag' }])
     tags!: Types.ObjectId[];
 

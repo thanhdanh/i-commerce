@@ -1,9 +1,28 @@
-FROM node:14.8.0-alpine
+FROM node:14.8.0-alpine As development
 
-RUN mkdir -p /var/www/app
-WORKDIR /var/www/app
-ADD . /var/www/app
+WORKDIR /usr/src/app
 
-RUN npm install
+COPY package*.json ./
 
-CMD npm run build && npm run start:prod
+RUN npm install --only=development
+
+COPY . .
+
+RUN npm run build
+
+FROM node:14.8.0-alpine as production
+
+ARG NODE_ENV=production
+ENV NODE_ENV=${NODE_ENV}
+
+WORKDIR /usr/src/app
+
+RUN npm install --only=production
+
+COPY . .
+
+COPY --from=development /usr/src/app/dist ./dist
+
+EXPOSE 3000
+
+CMD ["node", "dist/main"]

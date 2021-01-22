@@ -1,8 +1,9 @@
-version: '3'
+version: '3.7'
 services:
   db:
-    image: 'mongo:3.7'
+    image: mongo:latest
     restart: always
+    container_name: vdc_mongo
     environment:
       MONGO_INITDB_ROOT_USERNAME: ${MONGO_ROOT_USER}
       MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ROOT_PASSWORD}
@@ -27,21 +28,38 @@ services:
     networks:
       - backend
   gateway:
-    build: ./gateway
+    build:
+      context: ./gateway
+      target: development
     restart: always
+    container_name: 'vdc_gateway'
+    env_file:
+      - .env
     hostname: gateway
     ports:
       - "8100:3000"
     networks:
       - backend
+    command: npm run start:dev
+    depends_on:
+      - db
+      - redis
+
   product:
-    build: ./product
+    build:
+      context: ./product
+      target: development
     restart: always
     hostname: product
+    container_name: 'vdc_product'
     env_file:
       - .env
     networks:
       - backend
+    command: npm run start:dev
+    depends_on:
+      - db
+      - redis
 networks:
   backend:
     driver: bridge

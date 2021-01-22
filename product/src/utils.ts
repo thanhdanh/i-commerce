@@ -1,4 +1,4 @@
-import { Document, Model } from 'mongoose';
+import { Model } from 'mongoose';
 import { RequestQueryParams } from './interfaces/request_query.interface';
 import { CondOperator } from './types/request-query.types';
 

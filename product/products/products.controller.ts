@@ -1,11 +1,11 @@
 import { Controller, HttpStatus, Query } from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
 
-import { ProductService } from './services/product.service';
-import { RequestQueryParams } from './interfaces/request_query.interface';
+import { RequestQueryParams } from '../src/interfaces/request_query.interface';
+import { ProductService } from './product.service';
 
 @Controller()
-export class AppController {
+export class ProductsController {
   constructor(private readonly productService: ProductService) {}
 
   @MessagePattern('product_search')

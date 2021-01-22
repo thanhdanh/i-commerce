@@ -1,11 +1,10 @@
 import { Model } from 'mongoose';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { RequestQueryParams } from '../interfaces/request_query.interface';
-import { Category, CategoryDocument } from '../schemas/category.schema';
-import { ProductDocument } from '../schemas/product.schema';
-import { Product } from '../schemas/product.schema';
 import { createQueryBuilder } from 'src/utils';
+import { RequestQueryParams } from 'src/interfaces/request_query.interface';
+import { Product, ProductDocument } from 'src/schemas/product.schema';
+import { Category, CategoryDocument } from 'src/schemas/category.schema';
 
 @Injectable()
 export class ProductService {

@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ClientProxyFactory } from '@nestjs/microservices';
-import configuration from 'config/configuration';
+import configuration from 'src/config/configuration';
 import { ProductsController } from './product.controller';
 
 @Module({

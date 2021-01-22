@@ -11,8 +11,7 @@ services:
       MONGO_USER: ${MONGO_USER}
       MONGO_PASSWORD: ${MONGO_PASSWORD}
     volumes:
-      - "./db/data/db-files:/data/db"
-      - "./db/init/:/docker-entrypoint-initdb.d/"
+      - "./vdc_mongo/data:/data/db"
     ports:
       - 27018:27017
     networks:

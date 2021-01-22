@@ -6,8 +6,9 @@ async function bootstrap() {
   const app = await NestFactory.createMicroservice(AppModule, {
     transport: Transport.REDIS,
     options: {
-      url: '',
+      url: process.env.REDIS_HOST,
     }
   });
+  app.listen(() => console.log('Product service is listening'));
 }
 bootstrap();

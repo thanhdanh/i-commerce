@@ -1,10 +1,24 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ClientProxyFactory } from '@nestjs/microservices';
+import configuration from 'config/configuration';
+import { ProductsController } from './product.controller';
 
 @Module({
-  imports: [],
-  controllers: [AppController],
-  providers: [AppService],
+  imports: [
+    ConfigModule.forRoot({
+      load: [configuration],
+    })
+  ],
+  controllers: [ProductsController],
+  providers: [
+    {
+      provide: 'PRODUCT_SERVICE',
+      useFactory: (configService: ConfigService) => {
+        return ClientProxyFactory.create(configService.get('productsService'));
+      },
+      inject: [ConfigService],
+    },
+  ],
 })
 export class AppModule {}

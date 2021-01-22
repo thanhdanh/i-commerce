@@ -8,7 +8,7 @@ export const isNull = (val: any): boolean => val === null;
 export const isArrayFull = (val: any): boolean => Array.isArray(val) && hasItem(val);
 export const hasItem = (val: any): boolean => val.length > 0;
 
-export function createQueryBuilder(model: Model<Document<any>>, params: RequestQueryParams) {
+export function createQueryBuilder(model: Model<any>, params: RequestQueryParams) {
     const query = model.find();
 
     if (params.fields.length) {
@@ -50,6 +50,22 @@ export function createQueryBuilder(model: Model<Document<any>>, params: RequestQ
                     break;
             }
         })
+    }
+
+    if (params.sort.length) {
+        const sortObj = {}; 
+        params.sort.forEach(sortCond => {
+            sortObj[sortCond.field] = sortCond.order;
+        })
+        query.sort(sortObj);
+    }
+
+    if (params.limit > 0) {
+        query.limit(params.limit);
+    }
+
+    if (params.skip) {
+        query.limit(params.skip);
     }
 
     return query;

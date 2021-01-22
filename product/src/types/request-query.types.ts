@@ -1,4 +1,4 @@
-type QuerySortOperator = 'ASC' | 'DESC';
+type QuerySortOperator = 'asc' | 'desc';
 type SPrimitivesVal = string | number | boolean;
     
 export enum CondOperator {

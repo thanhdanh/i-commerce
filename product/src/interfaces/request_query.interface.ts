@@ -15,5 +15,5 @@ export interface RequestQueryParams {
 
     // Paginatiing
     limit: number;
-    search_after: number;
+    skip: number;
 }

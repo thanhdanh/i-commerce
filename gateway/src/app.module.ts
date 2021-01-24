@@ -1,24 +1,25 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule, ConfigService } from '@nestjs/config';
-import { ClientProxyFactory } from '@nestjs/microservices';
-import configuration from 'src/config/configuration';
-import { ProductsController } from './product.controller';
+import { GraphQLModule } from '@nestjs/graphql';
+import { ClientsModule, Transport } from '@nestjs/microservices';
+import { ProductQueryResolver } from './resolvers/product.resolver';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({
-      load: [configuration],
-    })
-  ],
-  controllers: [ProductsController],
-  providers: [
-    {
-      provide: 'PRODUCT_SERVICE',
-      useFactory: (configService: ConfigService) => {
-        return ClientProxyFactory.create(configService.get('productsService'));
+    GraphQLModule.forRoot({
+      autoSchemaFile: 'schema.gql',
+    }),
+    ClientsModule.register([
+      {
+        name: 'PRODUCT_SERVICE', 
+        transport: Transport.REDIS,
+        options: {
+          url: process.env.REDIS_HOST,
+        }
       },
-      inject: [ConfigService],
-    },
+    ]),
   ],
+  providers: [
+    ProductQueryResolver
+  ]
 })
 export class AppModule {}

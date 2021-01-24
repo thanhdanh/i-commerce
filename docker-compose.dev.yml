@@ -3,7 +3,7 @@ services:
   db:
     image: postgres:12
     restart: always
-    container_name: db
+    container_name: vdc_db
     environment:
       POSTGRES_USER: danhvt
       POSTGRES_PASSWORD: randompassword
@@ -28,10 +28,12 @@ services:
     networks:
       - backend
   gateway:
-    build:
-      context: ./gateway
-      dockerfile: Dockerfile
-    restart: always
+    image: node:14.15.4
+    restart: unless-stopped
+    working_dir: /home/node/app
+    volumes:
+      - ./gateway:/home/node/app
+      - ./gateway/node_modules:/home/node/app/node_modules
     container_name: 'vdc_gateway'
     environment:
       - REDIS_HOST=redis://redis
@@ -40,21 +42,25 @@ services:
       - "8100:3000"
     networks:
       - backend
+    command: node_modules/.bin/nest start --watch
     depends_on:
       - db
       - redis
 
   product:
-    build:
-      context: ./product
-      dockerfile: Dockerfile
-    restart: always
+    image: node:14.15.4
+    restart: unless-stopped
+    working_dir: /home/node/app
+    volumes:
+      - ./product:/home/node/app
+      - ./product/node_modules:/home/node/app/node_modules
     hostname: product
     container_name: 'vdc_product'
     environment:
       - REDIS_HOST=redis://redis
     networks:
       - backend
+    command: node_modules/.bin/nest start --watch
     depends_on:
       - db
       - redis

@@ -1,0 +1,37 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type Product {
+  id: Int!
+  name: String
+  description: String
+  price: Int!
+  brand: BrandEnum!
+  color: ColorEnum!
+}
+
+enum BrandEnum {
+  Samsung
+  Apple
+  Gigabyte
+  Corsair
+  Intel
+  Adata
+}
+
+enum ColorEnum {
+  Gray
+  White
+  Gold
+  Black
+  Blue
+  Red
+  Green
+  Pink
+  Purple
+}
+
+type Query {
+  products(limit: Float, skip: Float, orderBy: String, filterBy: String, search: String): [Product!]!
+}

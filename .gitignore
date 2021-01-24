@@ -102,4 +102,5 @@ dist
 # TernJS port file
 .tern-port
 
-vdc_mongo/
+vdc_mongo/mongodb/data
+redis/

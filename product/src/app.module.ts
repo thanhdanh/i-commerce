@@ -1,15 +1,16 @@
 import { Module } from '@nestjs/common';
-import { MongooseModule } from '@nestjs/mongoose';
-import { ProductsModule } from 'products/products.module';
+import { ProductService } from './products/product.service';
+import { ProductsController } from './products/products.controller';
+import { PrismaService } from './services/prisma.service';
 
 @Module({
-  imports: [
-    MongooseModule.forRoot(process.env.MONGO_URI),
-    ProductsModule
+  imports: [],
+  controllers: [
+    ProductsController
   ],
+  providers: [
+    PrismaService,
+    ProductService
+  ]
 })
-export class AppModule {
-  constructor() {
-    console.log('process.env.MONGO_URI', process.env.MONGO_URI)
-  }
-}
+export class AppModule {}

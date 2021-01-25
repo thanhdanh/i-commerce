@@ -1,12 +1,10 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { Prisma } from '@prisma/client';
+import { Brand, Color, Prisma } from '@prisma/client';
 import { PrismaService } from 'src/services/prisma.service';
 import { isNil } from 'src/utils/common.util';
 
 @Injectable()
 export class ProductService {
-  private readonly logger = new Logger('ProductService')
-
   constructor(private prisma: PrismaService) {}
 
   async searchProduct(params: {
@@ -16,18 +14,6 @@ export class ProductService {
     where?: string;
   }) {
     const { skip, take, orderBy, where } = params;
-    this.logger.debug(`====================================`)
-    this.logger.debug(`-> where`)
-    this.logger.debug(JSON.parse(where))
-    this.logger.debug(`====================================`)
-    this.logger.debug(`-> orderBy`)
-    this.logger.debug(JSON.parse(orderBy))
-    this.logger.debug(`====================================`)
-    this.logger.debug(`-> skip`)
-    this.logger.debug(skip)
-    this.logger.debug(`====================================`)
-    this.logger.debug(`-> limit`)
-    this.logger.debug(take)
     
     const products = await this.prisma.product.findMany({
       orderBy: !isNil(orderBy)? JSON.parse(orderBy) : undefined,
@@ -36,8 +22,36 @@ export class ProductService {
       where: !isNil(where)? JSON.parse(where) : undefined,
     })
 
-    
-
     return products;
+  }
+
+  async addProduct(data: {
+    categoryName: string,
+    name: string,
+    price: number,
+    color: Color,
+    brand: Brand,
+    description?: string
+  }) {
+    const { categoryName, name, price, description, color, brand } = data;
+    return this.prisma.product.create({ 
+      data: {
+        name,
+        price,
+        description,
+        color,
+        brand,
+        category: {
+          connectOrCreate: {
+            where: {
+              name: categoryName,
+            },
+            create: {
+              name: categoryName,
+            }
+          }
+        }
+      } 
+    });
   }
 }

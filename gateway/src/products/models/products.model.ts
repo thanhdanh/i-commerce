@@ -15,18 +15,24 @@ export class Product {
     @Field(type => Int)
     id: number;
 
-    @Field({ nullable: true })
-    name?: string;
+    @Field()
+    name: string;
 
     @Field({ nullable: true })
     description?: string;
 
     @Field(() => Int)
-    price: number;
+    price: number = 0;
     
     @Field(type => BrandEnum)
-    brand?: BrandEnum;
+    brand: BrandEnum;
 
     @Field(type => ColorEnum)
-    color?: ColorEnum;
+    color: ColorEnum;
+
+    @Field()
+    categoryId: number;
+
+    @Field()
+    creationDate: Date;
 }

@@ -4,11 +4,13 @@
 
 type Product {
   id: Int!
-  name: String
+  name: String!
   description: String
   price: Int!
   brand: BrandEnum!
   color: ColorEnum!
+  categoryId: Float!
+  creationDate: DateTime!
 }
 
 enum BrandEnum {
@@ -32,6 +34,24 @@ enum ColorEnum {
   Purple
 }
 
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
 type Query {
-  products(limit: Float, skip: Float, orderBy: String, filterBy: String, search: String): [Product!]!
+  products(skip: Int = 0, take: Int = 25, search: String, filterBy: String, orderBy: String): [Product!]!
+}
+
+type Mutation {
+  addProduct(newProductData: NewProductInput!): Product!
+}
+
+input NewProductInput {
+  name: String!
+  description: String
+  price: Int = 0
+  color: ColorEnum = Black
+  brand: BrandEnum = Samsung
+  categoryName: String!
 }

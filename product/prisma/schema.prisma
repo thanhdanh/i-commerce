@@ -19,7 +19,7 @@ model Product {
   color       Color   @default(Gray)
   visible     Boolean @default(true)
 
-  user    Category    @relation(fields: [categoryId], references: [id])
+  category    Category    @relation(fields: [categoryId], references: [id])
   categoryId  Int
 
   createdAt  DateTime    @default(now())
@@ -27,7 +27,7 @@ model Product {
 
 model Category {
   id        Int         @id @default(autoincrement())
-  name      String
+  name      String      @unique()
   products  Product[]   
   createdAt  DateTime   @default(now())
 }

@@ -1,19 +1,10 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { Transport } from '@nestjs/microservices';
+import { ExpressAdapter, NestExpressApplication } from '@nestjs/platform-express';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
-
-  const options = new DocumentBuilder()
-    .setTitle('API dics')
-    .addTag('products')
-    .setVersion('1.0')
-    .build();
-  const document = SwaggerModule.createDocument(app, options);
-  SwaggerModule.setup('api', app, document);
-
+  const app: NestExpressApplication = await NestFactory.create<NestExpressApplication>(AppModule, new ExpressAdapter())
   app.connectMicroservice({
     transport: Transport.REDIS,
     options: {
@@ -25,4 +16,5 @@ async function bootstrap() {
 
   await app.listen(3000);
 }
+
 bootstrap();

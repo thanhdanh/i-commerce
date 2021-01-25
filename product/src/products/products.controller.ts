@@ -11,19 +11,14 @@ export class ProductsController {
 
   @MessagePattern('products_search')
   async productsSearch(query: IQuery) {
-    try {
       this.logger.debug('Have requrest to search products')
       this.logger.debug(query)
-      const result = await this.productService.searchProduct(query);
-      return {
-        status: HttpStatus.OK,
-        data: result,
-      };
-    } catch (ex) {
-      return {
-        status: HttpStatus.BAD_REQUEST,
-        message: ex.message,
-      };
-    }
+      return this.productService.searchProduct(query);
+  }
+
+  @MessagePattern('products_add')
+  async productsAdd(data: any) {
+      this.logger.debug('Have requrest to add product')
+      return this.productService.searchProduct(data);
   }
 }

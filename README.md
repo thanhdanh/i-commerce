@@ -18,7 +18,12 @@ You must install the following on your local machine:
 
 
 ### Running
-
 1. Build docker images: product and gateway: `docker-compose build`
 2. Start all services by: `docker-compose up -d`
 3. Once the start script is done, the GraphQL Playground will be running on [http://localhost:8100/graphql](http://localhost:8100/graphql)
+4. Query products:
+```
+curl --location --request POST 'http://localhost:8100/graphql' \
+--header 'Content-Type: application/json' \
+--data-raw '{"query":"# Write your query or mutation here\n{\n  products(orderBy: \"-price\", filterBy: \"{\\\"price\\\":{\\\"lte\\\": 100000,\\\"gte\\\": 100000}}\") {\n    id\n    name\n  }\n}\n","variables":{}}'
+```

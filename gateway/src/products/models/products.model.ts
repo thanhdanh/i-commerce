@@ -1,5 +1,6 @@
 import { Field, Int, ObjectType, registerEnumType } from '@nestjs/graphql';
 import { BrandEnum, ColorEnum } from 'src/constants';
+import { Category } from './category.model';
 
 registerEnumType(BrandEnum, {
     name: 'BrandEnum',
@@ -35,4 +36,7 @@ export class Product {
 
     @Field()
     creationDate: Date;
+
+    @Field(type => Category)
+    category: Category;
 }

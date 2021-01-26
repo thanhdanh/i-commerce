@@ -2,6 +2,11 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type Category {
+  id: Int!
+  name: String!
+}
+
 type Product {
   id: Int!
   name: String!
@@ -11,6 +16,7 @@ type Product {
   color: ColorEnum!
   categoryId: Float!
   creationDate: DateTime!
+  category: Category!
 }
 
 enum BrandEnum {
@@ -40,7 +46,17 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 scalar DateTime
 
 type Query {
-  products(skip: Int = 0, take: Int = 25, search: String, filterBy: String, orderBy: String): [Product!]!
+  products(
+    skip: Int = 0
+    take: Int = 25
+
+    """ex: Samsung"""
+    search: String
+
+    """ex: {price:{lte: 10,gte:100000}}"""
+    filterBy: String
+    orderBy: String
+  ): [Product!]!
 }
 
 type Mutation {

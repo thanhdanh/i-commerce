@@ -20,8 +20,11 @@ export class ProductService {
       skip: !isNil(skip) ? skip : 0,
       take: !isNil(take) ? take : 25,
       where: !isNil(where)? JSON.parse(where) : undefined,
+      include: {
+        category: true
+      }
     })
-
+    console.log('products', products)
     return products;
   }
 

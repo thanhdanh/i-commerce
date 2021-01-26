@@ -16,9 +16,9 @@ export class ProductsController {
       return this.productService.searchProduct(query);
   }
 
-  @MessagePattern('products_add')
+  @MessagePattern('product_add')
   async productsAdd(data: any) {
       this.logger.debug('Have requrest to add product')
-      return this.productService.searchProduct(data);
+      return this.productService.addProduct(data);
   }
 }

@@ -27,16 +27,15 @@ export class ProductQueryResolver {
         if (!isNil(productsArgs.search)) {
             query.where = {
                 ...query.where,
-                where: {
-                    OR: [
-                        { name: { contains: productsArgs.search } },
-                        { description: { contains: productsArgs.search } }
-                    ]
-                }
+                OR: [
+                    { name: { contains: productsArgs.search } },
+                    { description: { contains: productsArgs.search } }
+                ]
             }
         }
         
         if (!isNil(productsArgs.filterBy)) {
+            console.log(productsArgs.filterBy)
             query.where = {
                 ...query.where,
                 ...JSON.parse(productsArgs.filterBy),

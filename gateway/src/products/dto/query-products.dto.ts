@@ -12,10 +12,10 @@ export class ProductsArgs {
   @Max(50)
   take = 25;
 
-  @Field({ nullable: true })
+  @Field({ nullable: true, description: "ex: Samsung" })
   search: string;
 
-  @Field({ nullable: true })
+  @Field({ nullable: true, description: "ex: {price:{lte: 10,gte:100000}}" })
   filterBy: string;
 
   @Field({ nullable: true })

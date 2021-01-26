@@ -1,4 +1,4 @@
-import { Inject, Post } from "@nestjs/common";
+import { Inject } from "@nestjs/common";
 import { Args, Mutation, Query, Resolver } from "@nestjs/graphql";
 import { ClientProxy } from "@nestjs/microservices";
 import { Product } from "src/products/models/products.model";

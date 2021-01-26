@@ -3,7 +3,7 @@ services:
   db:
     image: postgres:12
     restart: always
-    container_name: db
+    container_name: vdc_db
     environment:
       POSTGRES_USER: danhvt
       POSTGRES_PASSWORD: randompassword
@@ -31,7 +31,7 @@ services:
     build:
       context: ./gateway
       dockerfile: Dockerfile
-    restart: always
+    restart: unless-stopped
     container_name: 'vdc_gateway'
     environment:
       - REDIS_HOST=redis://redis
@@ -48,11 +48,12 @@ services:
     build:
       context: ./product
       dockerfile: Dockerfile
-    restart: always
+    restart: unless-stopped
     hostname: product
     container_name: 'vdc_product'
     environment:
       - REDIS_HOST=redis://redis
+      - DATABASE_URL=postgresql://danhvt:randompassword@db:5432/mydb?schema=public
     networks:
       - backend
     depends_on:

@@ -1,28 +1,23 @@
-FROM node:14.15.4 As development
+FROM node:12 AS builder
 
-WORKDIR /usr/src/app
+WORKDIR /app
 
 COPY package*.json ./
+COPY prisma ./prisma/
 
-RUN npm install --only=development
+RUN npm install
 
 COPY . .
 
 RUN npm run build
 
-FROM node:14.15.4 as production
+FROM node:12
 
-ARG NODE_ENV=production
-ENV NODE_ENV=${NODE_ENV}
-
-WORKDIR /usr/src/app
-
-RUN npm install --only=production
-
-COPY . .
-
-COPY --from=development /usr/src/app/dist ./dist
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/package*.json ./
+COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/.env ./
 
 EXPOSE 3000
 
-CMD ["node", "dist/main"]
+CMD [ "npm", "run", "start:prod" ]

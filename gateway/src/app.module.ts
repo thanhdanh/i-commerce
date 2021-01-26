@@ -8,6 +8,7 @@ import { ProductQueryResolver } from './products/resolvers/product.resolver';
     GraphQLModule.forRoot({
       autoSchemaFile: 'schema.gql',
       installSubscriptionHandlers: true,
+      playground: true,
     }),
     ClientsModule.register([
       {

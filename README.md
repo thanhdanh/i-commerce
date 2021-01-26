@@ -19,6 +19,6 @@ You must install the following on your local machine:
 
 ### Running
 
-1. On the Terminal, execute `npm install`. The start script will install all npm dependencies for all projects, lint the code, transpile the code, build the artifacts (Docker images) and run all of them via `docker-compose`.
-
-2. Once the start script is done, the GraphQL Playground will be running on [http://localhost:8100](http://localhost:8100)
+1. Build docker images: product and gateway: `docker-compose build`
+2. Start all services by: `docker-compose up -d`
+3. Once the start script is done, the GraphQL Playground will be running on [http://localhost:8100/graphql](http://localhost:8100/graphql)

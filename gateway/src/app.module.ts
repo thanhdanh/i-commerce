@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { GraphQLModule } from '@nestjs/graphql';
 import { ClientsModule, Transport } from '@nestjs/microservices';
+import { HealthCheckModule } from './health-check/health-check.module';
 import { ProductQueryResolver } from './products/resolvers/product.resolver';
 
 @Module({
@@ -19,6 +20,7 @@ import { ProductQueryResolver } from './products/resolvers/product.resolver';
         }
       },
     ]),
+    HealthCheckModule
   ],
   providers: [
     ProductQueryResolver

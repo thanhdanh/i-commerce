@@ -32,7 +32,7 @@ services:
       context: gateway
       dockerfile: Dockerfile
     restart: unless-stopped
-    container_name: 'vdc_gateway'
+    container_name: vdc_gateway
     environment:
       - REDIS_HOST=redis://redis
     hostname: gateway
@@ -44,11 +44,11 @@ services:
       - backend
   product:
     build:
-      context: product
+      context: services/product
       dockerfile: Dockerfile
     restart: unless-stopped
     hostname: product
-    container_name: 'vdc_product'
+    container_name: vdc_product
     environment:
       - REDIS_HOST=redis://redis
       - DATABASE_URL=postgresql://danhvt:randompassword@db:5432/mydb?schema=public

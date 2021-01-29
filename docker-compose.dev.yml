@@ -52,8 +52,8 @@ services:
     restart: unless-stopped
     working_dir: /home/node/app
     volumes:
-      - ./product:/home/node/app
-      - ./product/node_modules:/home/node/app/node_modules
+      - ./services/product:/home/node/app
+      - ./services/product/node_modules:/home/node/app/node_modules
     hostname: product
     container_name: 'vdc_product'
     environment:

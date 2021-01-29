@@ -103,5 +103,6 @@ dist
 .tern-port
 
 vdc_mongo/mongodb/data
-redis
+redis/
 redis/dump.rdb
+db

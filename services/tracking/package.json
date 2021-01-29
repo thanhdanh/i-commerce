@@ -1,5 +1,5 @@
 {
-  "name": "gateway",
+  "name": "tracking",
   "version": "0.0.1",
   "description": "",
   "author": "",
@@ -22,22 +22,14 @@
   },
   "dependencies": {
     "@nestjs/common": "^7.5.1",
-    "@nestjs/config": "^0.6.1",
+    "@nestjs/config": "^0.6.2",
     "@nestjs/core": "^7.5.1",
-    "@nestjs/graphql": "^7.9.8",
-    "@nestjs/microservices": "^7.6.5",
+    "@nestjs/microservices": "^7.6.7",
     "@nestjs/platform-express": "^7.5.1",
-    "@nestjs/swagger": "^4.7.11",
-    "apollo-server-express": "^2.19.2",
-    "class-validator": "^0.13.1",
-    "dotenv": "^8.2.0",
-    "graphql": "^15.4.0",
-    "graphql-tools": "^7.0.2",
     "redis": "^3.0.2",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
-    "rxjs": "^6.6.3",
-    "swagger-ui-express": "^4.1.6"
+    "rxjs": "^6.6.3"
   },
   "devDependencies": {
     "@nestjs/cli": "^7.5.1",

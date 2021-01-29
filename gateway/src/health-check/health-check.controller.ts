@@ -1,23 +1,22 @@
-import { Controller, Get } from '@nestjs/common';
-import { Transport } from '@nestjs/microservices';
-import { HealthCheck, HealthCheckService, MicroserviceHealthIndicator } from '@nestjs/terminus';
+import { Controller, Get, Inject } from '@nestjs/common';
+import { ClientProxy } from '@nestjs/microservices';
+import { forkJoin } from 'rxjs';
+import { timeout } from 'rxjs/operators';
 
 @Controller('health')
 export class HealthController {
     constructor(
-        private health: HealthCheckService,
-        private microservice: MicroserviceHealthIndicator
+        @Inject('PRODUCT_SERVICE') private readonly productServiceClient: ClientProxy,
+        @Inject('TRACKING_SERVICE') private readonly trackingServiceClient: ClientProxy,
     ) {}
     
     @Get()
-    @HealthCheck()
     check() {
-        return this.health.check([
-            async () =>
-            this.microservice.pingCheck('tcp', {
-                transport: Transport.TCP,
-                options: { host: 'localhost', port: 8889 },
-            }),
-        ]) 
+        forkJoin([
+            this.productServiceClient.send('health', {}).pipe(timeout(5000)),
+            this.trackingServiceClient.send('health', {}).pipe(timeout(5000)),
+        ]).subscribe((data: any) => {
+            console.log('data', data);
+        })
     }
 }

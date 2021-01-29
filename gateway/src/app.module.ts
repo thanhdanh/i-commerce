@@ -1,14 +1,15 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
 import { GraphQLModule } from '@nestjs/graphql';
 import { ClientsModule, Transport } from '@nestjs/microservices';
-import { HealthCheckModule } from './health-check/health-check.module';
+import { HealthController } from './health-check/health-check.controller';
 import { ProductQueryResolver } from './products/resolvers/product.resolver';
 
 @Module({
   imports: [
+    ConfigModule.forRoot(),
     GraphQLModule.forRoot({
       autoSchemaFile: 'schema.gql',
-      installSubscriptionHandlers: true,
       playground: true,
     }),
     ClientsModule.register([
@@ -19,9 +20,16 @@ import { ProductQueryResolver } from './products/resolvers/product.resolver';
           url: process.env.REDIS_HOST,
         }
       },
+      {
+        name: 'TRACKING_SERVICE', 
+        transport: Transport.REDIS,
+        options: {
+          url: process.env.REDIS_HOST,
+        }
+      },
     ]),
-    HealthCheckModule
   ],
+  controllers: [HealthController],
   providers: [
     ProductQueryResolver
   ]

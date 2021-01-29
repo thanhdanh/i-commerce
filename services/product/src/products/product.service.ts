@@ -1,7 +1,8 @@
-import { Injectable, Logger } from '@nestjs/common';
-import { Brand, Color, Prisma } from '@prisma/client';
+import { Injectable } from '@nestjs/common';
+import { Brand, Color } from '@prisma/client';
 import { PrismaService } from 'src/services/prisma.service';
 import { isNil } from 'src/utils/common.util';
+import { promiseTimeout } from 'src/utils/promise-timeout';
 
 @Injectable()
 export class ProductService {
@@ -24,7 +25,6 @@ export class ProductService {
         category: true
       }
     })
-    console.log('products', products)
     return products;
   }
 
@@ -56,5 +56,9 @@ export class ProductService {
         }
       } 
     });
+  }
+
+  async checkDB(timeout: number) {
+    return await promiseTimeout(timeout, this.prisma.$queryRaw('SELECT 1'));
   }
 }

@@ -1,9 +1,9 @@
 version: '3.7'
 services:
-  db:
+  product_db:
     image: postgres:12
     restart: always
-    container_name: vdc_db
+    container_name: vdc_product_db
     environment:
       POSTGRES_USER: danhvt
       POSTGRES_PASSWORD: randompassword
@@ -11,15 +11,15 @@ services:
     ports: 
       - '25432:5432'
     volumes:
-      - ./db:/var/lib/postgresql/data
+      - /tmp/product-db:/var/lib/postgresql/data
     networks:
       - backend
   redis: 
     image: 'redis'
-    container_name: 'redis_transporter'
+    container_name: 'vdc_redis'
     restart: always
     volumes:
-      - ./redis:/data
+      - /tmp/vdc_redis:/data
     environment:
       - ALLOW_EMPTY_PASSWORD=yes
       - REDIS_DISABLE_COMMANDS=FLUSHDB,FLUSHALL
@@ -35,8 +35,6 @@ services:
       - ./gateway:/home/node/app
       - ./gateway/node_modules:/home/node/app/node_modules
     container_name: 'vdc_gateway'
-    environment:
-      - REDIS_HOST=redis://redis
     hostname: gateway
     ports:
       - "8100:3000"
@@ -44,7 +42,7 @@ services:
       - backend
     command: node_modules/.bin/nest start --watch
     depends_on:
-      - db
+      - product_db
       - redis
 
   product:
@@ -56,13 +54,25 @@ services:
       - ./services/product/node_modules:/home/node/app/node_modules
     hostname: product
     container_name: 'vdc_product'
-    environment:
-      - REDIS_HOST=redis://redis
     networks:
       - backend
     command: node_modules/.bin/nest start --watch
     depends_on:
-      - db
+      - product_db
+      - redis
+  tracking:
+    image: node:14.15.4
+    restart: unless-stopped
+    working_dir: /home/node/app
+    volumes:
+      - ./services/tracking:/home/node/app
+      - ./services/tracking/node_modules:/home/node/app/node_modules
+    hostname: tracking
+    container_name: 'vdc_tracking'
+    networks:
+      - backend
+    command: node_modules/.bin/nest start --watch
+    depends_on:
       - redis
 networks:
   backend:

@@ -1,6 +1,6 @@
 import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
 import { Transport } from '@nestjs/microservices';
+import { AppModule } from './app.module';
 
 async function bootstrap() {
   const app = await NestFactory.createMicroservice(AppModule, {
@@ -9,6 +9,6 @@ async function bootstrap() {
       url: process.env.REDIS_HOST,
     }
   });
-  app.listen(() => console.log('Product service is listening'));
+  app.listen(() => console.log('Tracking service is listening'));
 }
 bootstrap();

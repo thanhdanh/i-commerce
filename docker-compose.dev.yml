@@ -14,6 +14,20 @@ services:
       - /tmp/product-db:/var/lib/postgresql/data
     networks:
       - backend
+  tracking_db:
+    image: 'bitnami/mongodb:latest'
+    container_name: 'vdc_tracking_db'
+    ports:
+      - "28017:27017"
+    volumes:
+      - /tmp/vdc_mongodb:/bitnami/mongodb
+    environment:
+      - MONGODB_ROOT_PASSWORD=randompassword
+      - MONGODB_USERNAME=my_user
+      - MONGODB_PASSWORD=randompassword
+      - MONGODB_DATABASE=my_db
+    networks:
+      - backend
   redis: 
     image: 'redis'
     container_name: 'vdc_redis'
@@ -73,6 +87,7 @@ services:
       - backend
     command: node_modules/.bin/nest start --watch
     depends_on:
+      - tracking_db
       - redis
 networks:
   backend:

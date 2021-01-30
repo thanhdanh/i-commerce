@@ -23,6 +23,9 @@ export class HealthController {
             result.error = new Error(error).message;
         }
 
+        const { heapUsed } = process.memoryUsage();
+        result.memoryUsage = heapUsed;
+                  
         return result;
     }
 }

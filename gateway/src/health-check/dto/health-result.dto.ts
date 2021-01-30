@@ -8,6 +8,7 @@ export class HealthCheckResultDto {
     status: ServiceStatus;
     error?: string;
     services: HealthCheckResultDto[];
+    memoryUsage: number;
 
     constructor(name: string, status:ServiceStatus) {
         this.name = name;

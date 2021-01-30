@@ -1,6 +1,7 @@
 import { Controller, Get } from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
 import { AppService } from './app.service';
+import { CreateProductActivityDTO } from './dto/create-activity.dto';
 import { HealthCheckResultDto, ServiceStatus } from './dto/health-result.dto';
 
 @Controller()
@@ -11,25 +12,26 @@ export class AppController {
   async checkHealth(timeout: number) {
     const result = new HealthCheckResultDto('tracking_service', ServiceStatus.UP);
     const db = new HealthCheckResultDto('tracking_db', ServiceStatus.DOWN);
-    // try {
-    //   if (await this.productService.checkDB(timeout)) {
-    //     db.status = ServiceStatus.UP;
-    //   }
-    // } catch (error) {
-    //   db.status = ServiceStatus.DOWN;
-    //   db.error = new Error(error).message;
-    // }
-    result.services.push(db);
-    return result;
+    
+    try {
+      await this.appService.checkDB(timeout)
+      db.status = ServiceStatus.UP;
+    } catch (error) {
+      db.status = ServiceStatus.DOWN;
+      db.error = new Error(error).message;
+    }
 
-    // try {
-    //   if (await this.productService.checkDB(timeout)) {
-    //     result.db_status = 'up';
-    //   }
-    // } catch (error) {
-    //   result.db_status = 'down';
-    // }
+    result.services.push(db);
+    
+    const { heapUsed } = process.memoryUsage();
+    result.memoryUsage = heapUsed;
     
     return result;
+  }
+
+  @MessagePattern('tracking_activity')
+  async addNewActivity(data: CreateProductActivityDTO) {
+    console.log(data)
+    return this.appService.addActivity(data);
   }
 }

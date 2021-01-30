@@ -61,4 +61,12 @@ export class ProductService {
   async checkDB(timeout: number) {
     return await promiseTimeout(timeout, this.prisma.$queryRaw('SELECT 1'));
   }
+
+  async getProductDetail(id: number) {
+    return await this.prisma.product.findUnique({
+      where: {
+        id,
+      }
+    })
+  }
 }

@@ -1,7 +1,8 @@
 import { Controller, Get, Inject } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import { forkJoin } from 'rxjs';
+import { forkJoin, Observable } from 'rxjs';
 import { timeout } from 'rxjs/operators';
+import { HealthCheckResultDto, ServiceStatus } from './dto/health-result.dto';
 
 @Controller('health')
 export class HealthController {
@@ -11,12 +12,17 @@ export class HealthController {
     ) {}
     
     @Get()
-    check() {
-        forkJoin([
-            this.productServiceClient.send('health', {}).pipe(timeout(5000)),
-            this.trackingServiceClient.send('health', {}).pipe(timeout(5000)),
-        ]).subscribe((data: any) => {
-            console.log('data', data);
-        })
+    async check() {
+        const result = new HealthCheckResultDto('api', ServiceStatus.UP);
+        try {
+            result.services = await forkJoin([
+                <Observable<HealthCheckResultDto>> this.productServiceClient.send('product_healthz', 5000).pipe(timeout(5000)),
+                <Observable<HealthCheckResultDto>> this.trackingServiceClient.send('tracking_healthz', 5000).pipe(timeout(5000)),
+            ]).toPromise();
+        } catch (error) {
+            result.error = new Error(error).message;
+        }
+
+        return result;
     }
 }

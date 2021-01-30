@@ -1,5 +1,6 @@
 import { Controller, HttpStatus, Logger, Query } from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
+import { HealthCheckResultDto, ServiceStatus } from 'src/dto/health-result.dto';
 import { IQuery } from 'src/interfaces/common.interface';
 
 import { ProductService } from './product.service';
@@ -22,21 +23,19 @@ export class ProductsController {
     return this.productService.addProduct(data);
   }
 
-  @MessagePattern('health')
-  async checkHealth(timeout: number) {
-    const result = {
-      service_status: 'up',
-      db_status: 'down'
-    }
-
+  @MessagePattern('product_healthz')
+  async checkHealth(timeout: number): Promise<HealthCheckResultDto> {
+    const result = new HealthCheckResultDto('product_service', ServiceStatus.UP);
+    const db = new HealthCheckResultDto('product_db', ServiceStatus.DOWN);
     try {
       if (await this.productService.checkDB(timeout)) {
-        result.db_status = 'up';
+        db.status = ServiceStatus.UP;
       }
     } catch (error) {
-      result.db_status = 'down';
+      db.status = ServiceStatus.DOWN;
+      db.error = new Error(error).message;
     }
-    
+    result.services.push(db);
     return result;
   }
 }

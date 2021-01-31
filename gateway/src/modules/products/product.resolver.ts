@@ -81,7 +81,7 @@ export class ProductQueryResolver {
     @Mutation(returns => Product)
     @UseGuards(GqlAuthGuard)
     async addProduct(
-        @Args('newProductData') newProductData: NewProductInput,
+        @Args('data') newProductData: NewProductInput,
     ): Promise<Product> {
         const product = await this.productServiceClient.send('add_product', newProductData).toPromise();
         return product;

@@ -1,18 +1,17 @@
-import { Injectable } from "@nestjs/common";
+import { Inject, Injectable } from "@nestjs/common";
 import { JwtService } from '@nestjs/jwt';
-import { User } from "./models/user.model";
+import { UserDto } from "./dto/user.dto";
 
 @Injectable()
 export class AuthService {
     constructor(
-        private jwtService: JwtService,
+        @Inject('JwtAccessTokenService') private readonly accessTokenService: JwtService,
     ) { }
 
-    async generateAccessToken(user: User): Promise<string> {
-        return this.jwtService.sign(
+    async generateAccessToken(user: UserDto): Promise<string> {
+        return this.accessTokenService.sign(
             {
-                sub: user.id,
-                username: user.username,
+                sub: user.username,
                 isAdmin: user.isAdmin,
             },
         )

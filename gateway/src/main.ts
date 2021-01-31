@@ -10,7 +10,6 @@ import { HttpExceptionFilter } from './exceptions/http.exception';
 
 async function bootstrap() {
   const app: NestExpressApplication = await NestFactory.create<NestExpressApplication>(AppModule, new ExpressAdapter())
-
   app.use(cors());
   app.use(compression());
   app.use(helmet());

@@ -3,6 +3,7 @@ import { Transport } from '@nestjs/microservices';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
+  console.log( process.env)
   const app = await NestFactory.createMicroservice(AppModule, {
     transport: Transport.REDIS,
     options: {

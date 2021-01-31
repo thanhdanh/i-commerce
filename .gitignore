@@ -105,4 +105,4 @@ dist
 vdc_mongo/mongodb/data
 redis/
 redis/dump.rdb
-db
+.docker

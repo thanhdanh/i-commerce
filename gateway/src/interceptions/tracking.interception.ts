@@ -7,7 +7,7 @@ import { ActityType } from "src/enums/activity-product.enum";
 @Injectable()
 export class TrackingInterceptor implements NestInterceptor {
     constructor(
-        @Inject('TRACKING_SERVICE') private readonly trackingServiceClient: ClientProxy,
+        @Inject('TRANSPORT_SERVICE') private readonly transportServiceClient: ClientProxy,
     ) {}
     
     intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
@@ -42,6 +42,6 @@ export class TrackingInterceptor implements NestInterceptor {
             }
         }
         
-        this.trackingServiceClient.emit('tracking_activity', trackingInfo).pipe(timeout(5000))
+        this.transportServiceClient.emit('tracking_activity', trackingInfo).pipe(timeout(5000))
     }
 }

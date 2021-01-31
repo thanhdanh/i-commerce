@@ -1,5 +1,5 @@
-import { Inject, UseInterceptors } from "@nestjs/common";
-import { Args, Int, Mutation, Query, Resolver } from "@nestjs/graphql";
+import { Inject, UseGuards, UseInterceptors } from "@nestjs/common";
+import { Args, Info, Int, Mutation, Query, Resolver } from "@nestjs/graphql";
 import { ClientProxy } from "@nestjs/microservices";
 import { Product } from "src/modules/products/models/products.model";
 import { isNil } from "../../utils/common.util";
@@ -7,11 +7,13 @@ import { timeout } from 'rxjs/operators';
 import { NewProductInput } from "./dto/create-product.dto";
 import { ProductsArgs } from "./dto/query-products.dto";
 import { TrackingInterceptor } from "src/interceptions/tracking.interception";
+import { UpdateProductInput } from "./dto/update-product.dto";
+import { GqlAuthGuard } from "../auth/gql-auth.guard";
 
 @Resolver(() => Product)
 export class ProductQueryResolver {
     constructor(
-        @Inject('PRODUCT_SERVICE') private readonly productServiceClient: ClientProxy,
+        @Inject('TRANSPORT_SERVICE') private readonly productServiceClient: ClientProxy,
     ) {}
     
     @Query(() => [Product], { name: 'products'})
@@ -77,10 +79,31 @@ export class ProductQueryResolver {
     }
 
     @Mutation(returns => Product)
+    @UseGuards(GqlAuthGuard)
     async addProduct(
         @Args('newProductData') newProductData: NewProductInput,
     ): Promise<Product> {
         const product = await this.productServiceClient.send('add_product', newProductData).toPromise();
         return product;
+    }
+
+    @Mutation(returns => Product, { name: 'updateProduct' })
+    @UseGuards(GqlAuthGuard)
+    async updateProduct(
+        @Args('id', { type: () => Int }) id: number,
+        @Args('updateProductData') updateData: UpdateProductInput,
+    ) {
+        const product = await this.productServiceClient.send('update_product', { id, updateData }).toPromise();
+        return product;
+    }
+
+    @Mutation(returns => Number, { name: 'deleteProduct' })
+    @UseGuards(GqlAuthGuard)
+    async deleteProduct(
+        @Args('id', { type: () => Int }) id: number
+    ): Promise<number>
+    {
+        const productID = await this.productServiceClient.send('delete_product', id).toPromise();
+        return productID;
     }
 }

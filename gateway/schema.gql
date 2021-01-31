@@ -2,6 +2,10 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type AccessTokenPayload {
+  accessToken: String!
+}
+
 type Category {
   id: Int!
   name: String!
@@ -61,7 +65,15 @@ type Query {
 }
 
 type Mutation {
+  login(data: LoginUserInput!): AccessTokenPayload!
   addProduct(newProductData: NewProductInput!): Product!
+  updateProduct(updateProductData: UpdateProductInput!, id: Int!): Product!
+  deleteProduct(id: Int!): Float!
+}
+
+input LoginUserInput {
+  username: String!
+  password: String!
 }
 
 input NewProductInput {
@@ -71,4 +83,13 @@ input NewProductInput {
   color: ColorEnum = Black
   brand: BrandEnum = Samsung
   categoryName: String!
+}
+
+input UpdateProductInput {
+  name: String
+  description: String
+  price: Int
+  color: ColorEnum
+  brand: BrandEnum
+  categoryId: Float
 }

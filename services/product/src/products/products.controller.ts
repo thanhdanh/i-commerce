@@ -29,6 +29,12 @@ export class ProductsController {
     return this.productService.addProduct(data);
   }
 
+  @MessagePattern('update_product')
+  async update(@Payload() info: any) {
+    this.logger.debug('Have requrest to query product detail')
+    return this.productService.updateProduct(info.id, info.data);
+  }
+
   @MessagePattern('product_healthz')
   async checkHealth(timeout: number): Promise<HealthCheckResultDto> {
     const result = new HealthCheckResultDto('product_service', ServiceStatus.UP);

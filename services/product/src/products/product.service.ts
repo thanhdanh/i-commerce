@@ -3,6 +3,7 @@ import { Brand, Color } from '@prisma/client';
 import { PrismaService } from 'src/services/prisma.service';
 import { isNil } from 'src/utils/common.util';
 import { promiseTimeout } from 'src/utils/promise-timeout';
+import { UpdateProductInput } from './dto/update-product.dto';
 
 @Injectable()
 export class ProductService {
@@ -66,6 +67,21 @@ export class ProductService {
     return await this.prisma.product.findUnique({
       where: {
         id,
+      }
+    })
+  }
+
+  async updateProduct(id: number, data: UpdateProductInput) {
+    return await this.prisma.product.update({
+      where: {
+        id,
+      },
+      data: {
+        name: data.name,
+        description: data.description,
+        color: data.color,
+        brand: data.brand,
+        price: data.price,
       }
     })
   }

@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { GraphQLModule } from '@nestjs/graphql';
-import { ClientsModule, Transport } from '@nestjs/microservices';
-import { HealthController } from './health-check/health-check.controller';
-import { ProductQueryResolver } from './products/resolvers/product.resolver';
+import { ClientProxyFactory, ClientsModule, Transport } from '@nestjs/microservices';
+import { HealthController } from './modules/health-check/health-check.controller';
+import { ProductQueryResolver } from './modules/products/product.resolver';
 
 @Module({
   imports: [
@@ -13,25 +13,36 @@ import { ProductQueryResolver } from './products/resolvers/product.resolver';
       playground: true,
     }),
     ClientsModule.register([
-      {
-        name: 'PRODUCT_SERVICE', 
-        transport: Transport.REDIS,
-        options: {
-          url: process.env.REDIS_HOST,
-        }
-      },
-      {
-        name: 'TRACKING_SERVICE', 
-        transport: Transport.REDIS,
-        options: {
-          url: process.env.REDIS_HOST,
-        }
-      },
+      
     ]),
   ],
   controllers: [HealthController],
   providers: [
-    ProductQueryResolver
+    ProductQueryResolver,
+    {
+      provide: 'TRACKING_SERVICE',
+      useFactory: (configService: ConfigService) => {
+        return ClientProxyFactory.create({
+          transport: Transport.REDIS,
+          options: {
+            url: configService.get<string>('REDIS_HOST'),
+          }
+        });
+      },
+      inject: [ConfigService],
+    },
+    {
+      provide: 'PRODUCT_SERVICE',
+      useFactory: (configService: ConfigService) => {
+        return ClientProxyFactory.create({
+          transport: Transport.REDIS,
+          options: {
+            url: configService.get<string>('REDIS_HOST'),
+          }
+        });
+      },
+      inject: [ConfigService],
+    },
   ]
 })
 export class AppModule {}

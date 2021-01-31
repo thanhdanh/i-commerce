@@ -1,5 +1,5 @@
 import { Controller, Get } from '@nestjs/common';
-import { MessagePattern } from '@nestjs/microservices';
+import { EventPattern, MessagePattern, Payload } from '@nestjs/microservices';
 import { AppService } from './app.service';
 import { CreateProductActivityDTO } from './dto/create-activity.dto';
 import { HealthCheckResultDto, ServiceStatus } from './dto/health-result.dto';
@@ -29,9 +29,9 @@ export class AppController {
     return result;
   }
 
-  @MessagePattern('tracking_activity')
-  async addNewActivity(data: CreateProductActivityDTO) {
-    console.log(data)
+  @EventPattern('tracking_activity')
+  async addNewActivity(@Payload() data: CreateProductActivityDTO) {
+    console.log('new data =>',data)
     return this.appService.addActivity(data);
   }
 }

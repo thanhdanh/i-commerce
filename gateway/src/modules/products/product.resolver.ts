@@ -1,11 +1,11 @@
 import { Inject, UseInterceptors } from "@nestjs/common";
 import { Args, Int, Mutation, Query, Resolver } from "@nestjs/graphql";
 import { ClientProxy } from "@nestjs/microservices";
-import { Product } from "src/products/models/products.model";
+import { Product } from "src/modules/products/models/products.model";
 import { isNil } from "../../utils/common.util";
 import { timeout } from 'rxjs/operators';
-import { NewProductInput } from "../dto/create-product.dto";
-import { ProductsArgs } from "../dto/query-products.dto";
+import { NewProductInput } from "./dto/create-product.dto";
+import { ProductsArgs } from "./dto/query-products.dto";
 import { TrackingInterceptor } from "src/interceptions/tracking.interception";
 
 @Resolver(() => Product)
@@ -37,7 +37,6 @@ export class ProductQueryResolver {
         }
         
         if (!isNil(productsArgs.filterBy)) {
-            console.log(productsArgs.filterBy)
             query.where = {
                 ...query.where,
                 ...JSON.parse(productsArgs.filterBy),
@@ -64,11 +63,12 @@ export class ProductQueryResolver {
         query.orderBy = JSON.stringify(query.orderBy);
 
         const result = await this.productServiceClient.send('query_products', query).pipe(timeout(5000)).toPromise();
-        console.log('result', result)
+
         return result;
     }
     
-    @Query(returns => Product, { name: 'productDetail'})
+    @Query(returns => Product, { name: 'productDetail', nullable: true })
+    @UseInterceptors(TrackingInterceptor)
     async getProductDetail(
         @Args('id', { type: () => Int }) id: number
     ): Promise<Product> {

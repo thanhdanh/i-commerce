@@ -36,20 +36,22 @@ export class Activity {
 
     @Prop({ type: Object })
     query: {
-        key: string,
+        keyWord: string,
         filterBy: string,
-        orderBy: string,
-        skip: number,
-        limit: number,
     }
     
     @Prop({ default: 0 })
     duration: number;
 
+    @Prop({ type: String })
     message: string;
+
+    @Prop({ type: String })
+    userAgent: string;
     
+    @Prop({ type: Object })
     params: {
-        productId: number,
+        id: number,
     }
 }
 

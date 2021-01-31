@@ -17,8 +17,9 @@ services:
   tracking_db:
     image: 'bitnami/mongodb:latest'
     container_name: 'vdc_tracking_db'
+    restart: always
     ports:
-      - "28017:27017"
+      - 28017:27017
     volumes:
       - /tmp/vdc_mongodb:/bitnami/mongodb
     environment:

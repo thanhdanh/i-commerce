@@ -57,7 +57,7 @@ type Query {
     filterBy: String
     orderBy: String
   ): [Product!]!
-  productDetail(id: Int!): Product!
+  productDetail(id: Int!): Product
 }
 
 type Mutation {

@@ -1,5 +1,5 @@
 import { Controller, HttpStatus, Logger, Query } from '@nestjs/common';
-import { MessagePattern } from '@nestjs/microservices';
+import { MessagePattern, Payload } from '@nestjs/microservices';
 import { HealthCheckResultDto, ServiceStatus } from 'src/dto/health-result.dto';
 import { IQuery } from 'src/interfaces/common.interface';
 
@@ -24,7 +24,7 @@ export class ProductsController {
   }
 
   @MessagePattern('add_product')
-  async productsAdd(data: any) {
+  async productsAdd(@Payload() data: any) {
     this.logger.debug('Have requrest to add product')
     return this.productService.addProduct(data);
   }

@@ -1,7 +1,7 @@
 import { BadGatewayException, CallHandler, ExecutionContext, Inject, Injectable, NestInterceptor, Request } from "@nestjs/common";
 import { ClientProxy } from "@nestjs/microservices";
 import { Observable, throwError } from "rxjs";
-import { catchError, timeout } from "rxjs/operators";
+import { catchError, tap, timeout } from "rxjs/operators";
 import { ActityType } from "src/enums/activity-product.enum";
 
 @Injectable()
@@ -12,30 +12,36 @@ export class TrackingInterceptor implements NestInterceptor {
     
     intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
         const startTime = Date.now();
-        const [,args,_,info] = context.getArgs();
-
+        const [,args, ctx, info] = context.getArgs();
+        const userAgent = ctx.req.headers['user-agent'];
         return next
             .handle()
             .pipe(
                 timeout(10000),
                 catchError(err => throwError(new BadGatewayException())),
-                this.sendTracking(startTime, args, info.path),
+                tap(() => this.sendTracking(startTime, args, userAgent, info.path)),
             )
     }
 
-    sendTracking(startTime: number, args: any, path: any) {
+    sendTracking(startTime: number, args: any, userAgent: string, path: any) {
         const duration = Date.now() - startTime;
-        let activityType = ActityType.SEARCH_PRODUCTS;
-
+        const trackingInfo = <any> {
+            duration,
+            type:  ActityType.SEARCH_PRODUCTS,
+            userAgent
+        };
         if (path.typename === 'Query') {
             if (path.key === 'productDetail') {
-                activityType = ActityType.GET_PROUCT_DETAIL;
+                trackingInfo.type = ActityType.GET_PROUCT_DETAIL;
+                trackingInfo.params = args;
+            } else if (path.key === 'products') {
+                trackingInfo.query = {
+                    filterBy: args.filterBy,
+                    keyWord: args.search,
+                }
             }
         }
-
-        return () => this.trackingServiceClient.send('tracking_activity', {
-            duration,
-            type: activityType
-        })
+        
+        this.trackingServiceClient.emit('tracking_activity', trackingInfo).pipe(timeout(5000))
     }
 }

@@ -74,7 +74,6 @@ services:
     depends_on:
       - product_db
       - redis
-
   product:
     image: node:14.15.4
     restart: unless-stopped

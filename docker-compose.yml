@@ -10,10 +10,40 @@ services:
       POSTGRES_DB: mydb
     ports: 
       - '25432:5432'
+    volumes:
+      - .docker/vdc_product_postgresql:/var/lib/postgresql/data
     networks:
       - backend
+  tracking_db:
+    image: 'bitnami/mongodb:latest'
+    container_name: 'vdc_tracking_db'
+    restart: always
+    ports:
+      - 28017:27017
     volumes:
-      - /tmp/product-db:/var/lib/postgresql/data
+      - .docker/vdc_tracking_mongodb:/bitnami/mongodb
+    environment:
+      - MONGODB_ROOT_PASSWORD=randompassword
+      - MONGODB_USERNAME=my_user
+      - MONGODB_PASSWORD=randompassword
+      - MONGODB_DATABASE=my_db
+    networks:
+      - backend
+  user_db:
+    image: 'bitnami/mongodb:latest'
+    container_name: 'vdc_user_db'
+    restart: always
+    ports:
+      - 29017:27017
+    volumes:
+      - .docker/vdc_user_mongodb:/bitnami/mongodb
+    environment:
+      - MONGODB_ROOT_PASSWORD=randompassword
+      - MONGODB_USERNAME=my_user
+      - MONGODB_PASSWORD=randompassword
+      - MONGODB_DATABASE=my_db
+    networks:
+      - backend
   redis: 
     image: 'redis'
     container_name: vdc_redis
@@ -31,8 +61,6 @@ services:
       dockerfile: Dockerfile
     restart: unless-stopped
     container_name: vdc_gateway
-    environment:
-      - REDIS_HOST=redis://redis
     hostname: gateway
     ports:
       - "8100:3000"
@@ -40,20 +68,46 @@ services:
       - redis
     networks:
       - backend
+    depends_on:
+      - product
+      - user
+      - tracking
+      - redis
   product:
     build:
       context: services/product
       dockerfile: Dockerfile
     restart: unless-stopped
-    hostname: product
+    hostname: vdc_product
     container_name: vdc_product
-    environment:
-      - REDIS_HOST=redis://redis
-      - DATABASE_URL=postgresql://danhvt:randompassword@db:5432/mydb?schema=public
     networks:
       - backend
     depends_on:
-      - db
+      - product_db
+      - redis
+  tracking:
+    build:
+      context: services/tracking
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    hostname: vdc_tracking
+    container_name: vdc_tracking
+    networks:
+      - backend
+    depends_on:
+      - tracking_db
+      - redis
+  user:
+    build:
+      context: services/user
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    hostname: vdc_user
+    container_name: vdc_user
+    networks:
+      - backend
+    depends_on:
+      - user_db
       - redis
 volumes:
   postgres:

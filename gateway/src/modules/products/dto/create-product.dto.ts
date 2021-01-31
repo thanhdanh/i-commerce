@@ -18,10 +18,10 @@ export class NewProductInput {
     price: number = 0;
 
     @Field(type => ColorEnum, { nullable: true })
-    color = ColorEnum.Black
+    color: ColorEnum;
 
     @Field(type => BrandEnum, { nullable: true })
-    brand = BrandEnum.Samsung
+    brand: BrandEnum;
 
     @Field()
     categoryName: string;

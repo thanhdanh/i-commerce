@@ -9,6 +9,7 @@ import { ProductsArgs } from "./dto/query-products.dto";
 import { TrackingInterceptor } from "src/interceptions/tracking.interception";
 import { UpdateProductInput } from "./dto/update-product.dto";
 import { GqlAuthGuard } from "../auth/gql-auth.guard";
+import { AdminGuard } from "src/modules/auth/roles.guard";
 
 @Resolver(() => Product)
 export class ProductQueryResolver {
@@ -79,7 +80,7 @@ export class ProductQueryResolver {
     }
 
     @Mutation(returns => Product)
-    @UseGuards(GqlAuthGuard)
+    @UseGuards(GqlAuthGuard, AdminGuard)
     async addProduct(
         @Args('data') newProductData: NewProductInput,
     ): Promise<Product> {
@@ -88,7 +89,7 @@ export class ProductQueryResolver {
     }
 
     @Mutation(returns => Product, { name: 'updateProduct' })
-    @UseGuards(GqlAuthGuard)
+    @UseGuards(GqlAuthGuard, AdminGuard)
     async updateProduct(
         @Args('id', { type: () => Int }) id: number,
         @Args('updateProductData') updateData: UpdateProductInput,
@@ -98,7 +99,7 @@ export class ProductQueryResolver {
     }
 
     @Mutation(returns => Number, { name: 'deleteProduct' })
-    @UseGuards(GqlAuthGuard)
+    @UseGuards(GqlAuthGuard, AdminGuard)
     async deleteProduct(
         @Args('id', { type: () => Int }) id: number
     ): Promise<number>

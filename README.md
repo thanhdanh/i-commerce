@@ -16,7 +16,7 @@ Project is a simple e-commerce applying with microservice architecture. This pro
     - [3. Admin login](#3_admin_login)
     - [4. Add new product](#4_add_new_product)
     - [5. Update product](#5_update_product)
-- [Mornitoring](#mornitoring)
+- [Monitoring](#monitoring)
 - [References](#references)
 
 ## Overview
@@ -31,9 +31,35 @@ filter, sort and search for products based on different criteria such as name, p
 + e. No customer registration is required.
 + f. No online payment is required.
 
-## Graph Model
+### 2. System design
+Our system have many services and 1 transporter, which are responsible for transmitting messages between different microservice instances. Most transporters natively support both request-response and event-based message styles.
 
-![GraphQLModel](https://user-images.githubusercontent.com/11265773/105785631-f0458180-5fad-11eb-80de-8f8dfd3c62ee.png)
+![High Level Design](documents/VDC_i_commerce-Arhcitecture.png)
+
+- **API Gateway**: Public gateway to route requests to multiple services using a single endpoint. Gateway is also provide authentication and security feature to restrict accessing resource through issuance jwt access token.
+- **Transporter**: implements the publish/subscribe messaging paradigm and leverages the Pub/Sub feature of Redis. Published messages are categorized in channels, without knowing what subscribers (if any) will eventually receive the message.
+- **Product Service**: manages our products with CRUD operations. This service also provides the ability to allow user could filter, sort and search for products based on dynamic criteria.
+- **Tracking Service**: records all customers activities (filtering, viewing product detail).
+- **User Service**: records all users information, support for authentication.
+
+### 3. Data Model
+For each service, we discuss data schema and datastore considerations.
+In general, we follow the basic principle of microservices is that each service manages its own data. Two services should not share a data store.
+
+#### Product Service
+The Product service stores information about all of our products. We use PostgreSQL.
+
+![Product Schema](documents/VDC_i_commerce-Product_schema.png)
+
+#### Tracking Service
+The Tracking service records all customers activities through listening from the Product service. We use MongoDB
+
+![Tracking Schema](documents/VDC_i_commerce-Tracking_schema.png)
+
+#### User Service
+The User service records all users informations. We use MongoDB
+
+![User Schema](documents/VDC_i_commerce-User_schema.png)
 
 ## How to Run
 
@@ -50,9 +76,21 @@ You must install the following on your local machine:
 1. Build docker images: product and gateway: `docker-compose build`
 2. Start all services by: `docker-compose up -d`
 3. Once the start script is done, the GraphQL Playground will be running on [http://localhost:8100/graphql](http://localhost:8100/graphql)
-4. Query products:
+
+## Demo
+
+### 1. Query products
+
 ```
 curl --location --request POST 'http://localhost:8100/graphql' \
 --header 'Content-Type: application/json' \
 --data-raw '{"query":"# Write your query or mutation here\n{\n  products(orderBy: \"-price\", filterBy: \"{\\\"price\\\":{\\\"lte\\\": 100000,\\\"gte\\\": 100000}}\") {\n    id\n    name\n  }\n}\n","variables":{}}'
 ```
+
+## Monitoring
+The monitoring supports you with readiness / liveness health checks. Healthchecks are very important when it comes to complex backend setups. Each microserice will check its database.
+To check health, we call API: http://localhost:8100/health
+
+Result: 
+
+![Health Result](documents/VDC_health_check.png)

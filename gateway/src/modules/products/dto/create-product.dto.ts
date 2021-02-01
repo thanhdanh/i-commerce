@@ -1,5 +1,5 @@
 import { Field, InputType, Int } from '@nestjs/graphql';
-import { IsOptional, Length, MaxLength, Min } from 'class-validator';
+import { IsEnum, IsOptional, Length, MaxLength, Min } from 'class-validator';
 import { BrandEnum, ColorEnum } from 'src/constants';
 
 @InputType()
@@ -17,10 +17,12 @@ export class NewProductInput {
     @Min(0)
     price: number = 0;
 
-    @Field(type => ColorEnum, { nullable: true })
+    @IsEnum(ColorEnum)
+    @Field({ nullable: true })
     color: ColorEnum;
 
-    @Field(type => BrandEnum, { nullable: true })
+    @IsEnum(BrandEnum)
+    @Field({ nullable: true })
     brand: BrandEnum;
 
     @Field()

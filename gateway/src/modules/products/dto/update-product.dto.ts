@@ -1,6 +1,10 @@
-import { Field, InputType, Int } from "@nestjs/graphql";
+import { Field, InputType, Int, registerEnumType } from "@nestjs/graphql";
 import { IsOptional, Length, MaxLength, Min } from "class-validator";
 import { BrandEnum, ColorEnum } from "src/constants";
+
+registerEnumType(ColorEnum, {
+    name: 'ColorEnum',
+});
 
 @InputType()
 export class UpdateProductInput {

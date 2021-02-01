@@ -11,7 +11,7 @@ export enum ColorEnum {
     Gray = 'Gray',
     White = 'White',
     Gold = 'Gold',
-    Black = 'Black',
+    Black = "Black",
     Blue = 'Blue',
     Red = 'Red',
     Green = 'Green',

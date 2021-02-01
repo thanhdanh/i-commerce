@@ -87,6 +87,25 @@ curl --location --request POST 'http://localhost:8100/graphql' \
 --data-raw '{"query":"# Write your query or mutation here\n{\n  products(orderBy: \"-price\", filterBy: \"{\\\"price\\\":{\\\"lte\\\": 100000,\\\"gte\\\": 100000}}\") {\n    id\n    name\n  }\n}\n","variables":{}}'
 ```
 
+### 2. View product detail
+
+curl --location --request POST 'http://localhost:8100/graphql' \
+--header 'Content-Type: application/json' \
+--data-raw '{"query":"# Write your query or mutation here\n{\n  productDetail(\n      id: 3\n  ) {\n    id\n    name\n  }\n}\n","variables":{}}'
+
+### 3. Admin login
+
+curl --location --request POST 'http://localhost:8100/graphql' \
+--header 'Content-Type: application/json' \
+--data-raw '{"query":"mutation {\n    login(\n        data: {\n            username: \"admin\",\n            password: \"secretverystrong\"\n        }\n    ) {\n        accessToken\n    }\n}","variables":{}}'
+
+### 4. Add new product
+
+curl --location --request POST 'http://localhost:8100/graphql' \
+--header 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbiIsImlzQWRtaW4iOnRydWUsImlhdCI6MTYxMjE1NDU3MiwiZXhwIjoxNjEyMjQwOTcyfQ.yuxAxKUNiPExJyzaH5eSccdRjk-TNXBlXWZwewWDvF8' \
+--header 'Content-Type: application/json' \
+--data-raw '{"query":"mutation {\n    addProduct(\n        data: {\n            name: \"SSD KLEVV Neo N400 120GB 2.5-Inch SATA III 3D-NAND (SK Hynix) K120GSSDS3-N40\",\n            price: 2000,\n            color: \"Black\",\n            categoryName: \"Gigabytes\"\n        }\n    ) {\n        id\n        name\n    }\n}","variables":{}}'
+
 ## Monitoring
 The monitoring supports you with readiness / liveness health checks. Healthchecks are very important when it comes to complex backend setups. Each microserice will check its database.
 To check health, we call API: http://localhost:8100/health

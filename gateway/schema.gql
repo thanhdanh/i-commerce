@@ -80,8 +80,8 @@ input NewProductInput {
   name: String!
   description: String
   price: Int = 0
-  color: ColorEnum = Black
-  brand: BrandEnum = Samsung
+  color: String
+  brand: String
   categoryName: String!
 }
 

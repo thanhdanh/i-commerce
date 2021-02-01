@@ -28,6 +28,7 @@ export class User {
         type: String, 
         required: [true, 'Username can not be empty'], 
         index: true,
+        unique: true,
     })
     username: string;
 
